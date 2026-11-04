@@ -11,11 +11,12 @@ function validateConfig(c){
 }
 try{const saved=JSON.parse(localStorage.getItem('poe2-search-v1'));if(saved){if(pages[saved.active])active=saved.active;for(const k of Object.keys(pages))if(saved.configs?.[k])configs[k]=validateConfig(saved.configs[k]);favorites=(saved.favorites||[]).filter(f=>f&&pages[f.page]&&typeof f.name==='string').slice(0,100).map(f=>({...f,name:f.name.slice(0,100),config:validateConfig(f.config)}));}}catch{}
 const uid=()=>typeof crypto.randomUUID==='function'?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+let selectedOnly=false,clearSnapshot=null;
 const cfg=()=>configs[active];
 function persist(){try{localStorage.setItem('poe2-search-v1',JSON.stringify({active,configs,favorites}));}catch{toast('브라우저 저장 공간을 사용할 수 없어요. 내보내기로 보관해 주세요.');}}
 let timer;function toast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(timer);timer=setTimeout(()=>$('toast').classList.remove('show'),2600);}
 function visibleData(){return DATA.filter(d=>d.domain===pages[active].domain);}
-function navigate(k){active=k;$('optionSearch').value='';$('testText').value='';renderPage();persist();}
+function navigate(k){selectedOnly=false;clearSnapshot=null;$('undoClear').hidden=true;active=k;$('optionSearch').value='';$('testText').value='';renderPage();persist();}
 function renderPage(){
  const counts={vendor:'육성 장비 · 옵션',waystone:'위험 속성 · 보상',item:'장비 · 능력치',tablet:'콘텐츠 · 서판 속성'};
  $('nav').innerHTML=Object.entries(pages).map(([k,p],i)=>`<button class="nav-btn ${k===active?'active':''}" data-page="${k}" aria-label="${p.name}" aria-current="${k===active?'page':'false'}"><span class="category-art art-${k}" aria-hidden="true"></span><span class="category-shade" aria-hidden="true"></span><span class="category-copy"><small>0${i+1} / ${p.en}</small><strong>${p.name}</strong><span>${counts[k]}</span></span><span class="category-active" aria-hidden="true">${k===active?'선택됨':'열기'}</span></button>`).join('');
@@ -29,10 +30,13 @@ function renderPage(){
 const aliases={'이속':'이동 속도','피통':'생명력 최대치','피':'생명력','마나통':'마나 최대치','에쉴':'에너지 보호막','레지':'저항','캐속':'시전 속도','공속':'공격 속도','물피':'물리 피해','치피':'치명타 피해','치확':'치명타 명중','맵':'지도'};
 function renderCatalog(){
  let q=$('optionSearch').value.trim();q=aliases[q]||q;const group=$('groupFilter').value;
- const list=visibleData().filter(d=>(!group||d.group===group||(group==='map_key_low'&&d.group.startsWith('map_key_')))&&(!q||(d.label+' '+(groupNames[d.group]||d.group)).includes(q)));
+ $('selectedOnly').setAttribute('aria-pressed',selectedOnly);
+ const list=visibleData().filter(d=>(!selectedOnly||cfg().rows.some(r=>r.id===d.id))&&(!group||d.group===group||(group==='map_key_low'&&d.group.startsWith('map_key_')))&&(!q||(d.label+' '+(groupNames[d.group]||d.group)).includes(q)));
  $('optionList').innerHTML=list.length?list.map(d=>{const row=cfg().rows.find(r=>r.id===d.id);return `<button class="option ${row?'selected':''}" data-mod="${d.id}" aria-pressed="${!!row}"><span class="box">${row?(row.exclude?'−':'✓'):''}</span><span>${safe(d.label)}</span></button>`;}).join(''):'<div class="empty">일치하는 옵션이 없어요.<br>아래에서 검색할 문구를 직접 추가할 수 있어요.</div>';
 }
 function renderSelection(){
+ const count=cfg().rows.length+cfg().custom.length;
+ $('selectionCount').textContent=count;$('toolbarCount').textContent='선택 '+count+'개';$('mobileCount').textContent='선택 '+count+'개';$('clear').disabled=!count;$('mobileClear').disabled=!count;
  $('allMode').setAttribute('aria-pressed',cfg().mode==='all');$('anyMode').setAttribute('aria-pressed',cfg().mode==='any');
  const rows=cfg().rows.map((r,i)=>{const d=DATA.find(m=>m.id===r.id),can=(d.template.match(/#/g)||[]).length===1;return `<div class="selected-row"><span class="label">${safe(d.label)}<small>${r.exclude?'제외할 옵션':'찾을 옵션'}${can?' · 최소값 선택 가능':''}</small></span>${can?`<input type="number" min="0" max="9999" step="1" value="${safe(r.min)}" data-min="${i}" placeholder="최소값" aria-label="${safe(d.label)} 최소값">`:'<span class="micro">문구 검색</span>'}<button class="kind ${r.exclude?'exclude':''}" data-kind="${i}">${r.exclude?'제외':'포함'}</button><button class="remove" data-remove="${i}" aria-label="${safe(d.label)} 삭제">✕</button></div>`;});
  cfg().custom.forEach((t,i)=>rows.push(`<div class="selected-row"><span class="label">${safe(t.text)}<small>직접 입력한 문구</small></span><span></span><button class="kind ${t.exclude?'exclude':''}" data-customkind="${i}">${t.exclude?'제외':'포함'}</button><button class="remove" data-customremove="${i}" aria-label="직접 조건 삭제">✕</button></div>`));
@@ -46,7 +50,7 @@ function updateResults(){
   $('error').hidden=!current.over;$('error').textContent=current.over?'설정한 길이 기준을 넘었어요. 조건을 줄이거나 검색식을 나눠 주세요. 잘라서 복사하지 않습니다.':'';
   $('copy').disabled=!current.query||current.over;$('save').disabled=!current.query||current.over;
  }catch(e){current=null;$('query').value='';$('length').textContent='오류';$('error').hidden=false;$('error').textContent=e.message;$('copy').disabled=true;$('save').disabled=true;}
- evaluate();persist();
+ $('mobileCopy').disabled=$('copy').disabled;evaluate();persist();
 }
 function evaluate(){
  const text=$('testText').value;if(!text.trim()||!current?.query){$('testResult').innerHTML='<span class="micro">조건과 아이템 텍스트를 넣으면 일치 여부가 표시돼요.</span>';return;}
@@ -72,7 +76,15 @@ $('optionSearch').oninput=renderCatalog;$('groupFilter').onchange=renderCatalog;
 $('selection').addEventListener('input',e=>{if(e.target.dataset.min!==undefined){cfg().rows[+e.target.dataset.min].min=e.target.value;updateResults();}});
 $('selection').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.kind!==undefined){const r=cfg().rows[+b.dataset.kind];r.exclude=!r.exclude;}if(b.dataset.remove!==undefined)cfg().rows.splice(+b.dataset.remove,1);if(b.dataset.customkind!==undefined){const r=cfg().custom[+b.dataset.customkind];r.exclude=!r.exclude;}if(b.dataset.customremove!==undefined)cfg().custom.splice(+b.dataset.customremove,1);renderCatalog();renderSelection();updateResults();});
 $('allMode').onclick=()=>{cfg().mode='all';renderSelection();updateResults();};$('anyMode').onclick=()=>{cfg().mode='any';renderSelection();updateResults();};
-$('clear').onclick=()=>{configs[active]=blank();renderPage();persist();};
+function clearConditions(){
+ if(!cfg().rows.length&&!cfg().custom.length)return;
+ clearSnapshot={page:active,config:structuredClone(cfg())};cfg().rows=[];cfg().custom=[];selectedOnly=false;
+ $('undoClear').hidden=false;renderCatalog();renderSelection();updateResults();toast(pages[active].name+' 조건을 초기화했어요. 되돌릴 수 있어요.');
+}
+$('clear').onclick=clearConditions;$('mobileClear').onclick=clearConditions;
+$('undoClear').onclick=()=>{if(!clearSnapshot||clearSnapshot.page!==active)return;configs[active]=validateConfig(clearSnapshot.config);clearSnapshot=null;$('undoClear').hidden=true;renderCatalog();renderSelection();updateResults();toast('초기화 전 조건으로 되돌렸어요.');};
+$('selectedOnly').onclick=()=>{selectedOnly=!selectedOnly;renderCatalog();};
+$('mobileCopy').onclick=()=>$('copy').click();
 function addCustom(){const text=$('customText').value.trim();if(!text)return;if(text.length>150||/["\n\r]/.test(text)){toast('150자 이내, 큰따옴표·줄바꿈 없이 입력해 주세요.');return;}if(cfg().custom.length>=40){toast('직접 조건은 40개까지 저장할 수 있어요.');return;}cfg().custom.push({text,exclude:$('customKind').value==='exclude'});$('customText').value='';renderSelection();updateResults();}
 $('addCustom').onclick=addCustom;$('customText').onkeydown=e=>{if(e.key==='Enter')addCustom();};
 $('copy').onclick=async()=>{if(!current?.query||current.over)return;try{await navigator.clipboard.writeText(current.query);toast('복사했어! 게임 검색창에 붙여넣어 줘.');}catch{$('query').focus();$('query').select();toast('자동 복사가 막혔어요. 선택된 검색식을 직접 복사해 주세요.');}};
