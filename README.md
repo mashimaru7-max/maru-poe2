@@ -62,3 +62,11 @@ The local search catalogue contains 673 bilingual item names, 10 search groups, 
 Open `docs/currency-aliases.html` to inspect names, alias provenance, groups, and download the dictionary. Exact alias resolution takes priority, preventing tier abbreviations from matching lower tiers and `락` from expanding to every name containing 타락. Ordinary English/source-line search and source preservation continue to work.
 
 Bilingual metadata is adapted under MIT; see `docs/THIRD_PARTY_NOTICES.md`. Source URLs and per-alias distinctions between observed usage and search helpers are embedded in `docs/currency-aliases.js`.
+## Korean trade search
+Open `docs/trade.html`. Supports eight armour/support categories and Korean shorthand for 20 common options. A manual catalog exposes 1,822 exact stat entries, including English labels. Conditions, numeric ranges, a single-currency price bound, league and seller status become a Korean POE2 trade website link; no private trade API or account credentials are used.
+
+Ambiguous resistance, unknown words, conflicting bounds and normal-category mismatches block search until resolved or explicitly acknowledged. Resistance shorthand means individual explicit modifiers, not total/pseudo resistance. Strict comparisons, OR conditions, total stats and currency conversion are not supported. Saved searches remain browser-local. Temporary league names must be entered exactly.
+
+Trade catalog snapshot: 2026-09-15, from https://github.com/slickdomi/poe2-better-trade-filter/tree/ae8f72832392000ed6259d0d758bc8d8a3739c88/packages/web/src/data/filters.json . MIT notice in `docs/licenses/trade-data-MIT.txt`. This is a bounded snapshot, not a guarantee of current patch completeness. Raw options outside curated aliases can be selected manually.
+
+Validation: `node tests/trade-engine.test.cjs` (35 cases), plus browser checks for categories, ambiguity blocking, editing and responsive layout. Native browser CompressionStream is required.
