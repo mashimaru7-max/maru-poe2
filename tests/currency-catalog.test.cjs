@@ -6,6 +6,7 @@ for(const [query,yes,no]of [['완쥬',"Perfect Jeweller's Orb","Lesser Jeweller'
 assert.ok(S.find(block("Perfect Jeweller's Orb"),'완주').matched);assert.ok(S.find(block("Perfect Jeweller's Orb"),'완벽한 주얼러 오브').matched);
 assert.ok(S.find(block('Orb of Annulment'),'소멸오브').matched,'particle omission');
 assert.ok(S.find(E.parse('Show\n BaseType "Essence"\n').blocks[0],'육신의 에센스').matched,'generic partial-name filter rule');
+assert.equal(S.find(E.parse('Hide\n Class == "Life Flasks" "Mana Flasks"\n BaseType "Grand" "Greater"\n').blocks[0],'상엑').matched,false,'Greater flask bases must not match Greater Exalted Orb');
 assert.equal(S.lookup('미러').some(e=>e.name==='Crystallised Corruption'),false);
 for(const name of ['Orb of Alteration','Orb of Fusing',"Cartographer's Chisel"])assert.equal(D.entries.some(e=>e.name===name),false,'do not import PoE1-only currencies');
 console.log('PASS',nameCount,'catalogue names/groups and',aliasCount,'alias records; tier isolation, Korean spelling/spacing/particles, broad family rules, alias collisions, source references, PoE1 exclusions');
