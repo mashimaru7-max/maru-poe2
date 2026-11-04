@@ -17,7 +17,8 @@ let timer;function toast(s){$('toast').textContent=s;$('toast').classList.add('s
 function visibleData(){return DATA.filter(d=>d.domain===pages[active].domain);}
 function navigate(k){active=k;$('optionSearch').value='';$('testText').value='';renderPage();persist();}
 function renderPage(){
- $('nav').innerHTML=Object.entries(pages).map(([k,p])=>`<button class="nav-btn ${k===active?'active':''}" data-page="${k}" aria-current="${k===active?'page':'false'}"><span class="navicon" aria-hidden="true">${p.icon}</span>${p.name}<small>0${Object.keys(pages).indexOf(k)+1}</small></button>`).join('');
+ const counts={vendor:'육성 장비 · 옵션',waystone:'위험 속성 · 보상',item:'장비 · 능력치',tablet:'콘텐츠 · 서판 속성'};
+ $('nav').innerHTML=Object.entries(pages).map(([k,p],i)=>`<button class="nav-btn ${k===active?'active':''}" data-page="${k}" aria-label="${p.name}" aria-current="${k===active?'page':'false'}"><span class="category-art art-${k}" aria-hidden="true"></span><span class="category-shade" aria-hidden="true"></span><span class="category-copy"><small>0${i+1} / ${p.en}</small><strong>${p.name}</strong><span>${counts[k]}</span></span><span class="category-active" aria-hidden="true">${k===active?'선택됨':'열기'}</span></button>`).join('');
  const p=pages[active];$('pageTitle').textContent=p.name;$('pageDesc').textContent=p.desc;$('stepLabel').textContent=`0${Object.keys(pages).indexOf(active)+1} / ${p.en}`;
  const groups=[...new Set(visibleData().map(d=>d.group.startsWith('map_key_')?'map_key_low':d.group))];$('groupFilter').innerHTML='<option value="">전체 분류</option>'+groups.map(g=>`<option value="${safe(g)}">${safe(groupNames[g]||g)}</option>`).join('');
  $('dataCount').textContent=`${visibleData().length}개 옵션`;
