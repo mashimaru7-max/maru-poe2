@@ -1,4 +1,4 @@
-# 유배자의 검색 공방
+# 유배자의 공방
 
 Buildless POE2 Korean stash/vendor search-expression workbench.
 
@@ -30,3 +30,21 @@ Browser storage is local to each device/profile; export favorites for backup.
 
 ## GitHub Pages
 Publish the main branch /docs folder in Repository Settings → Pages. Assets use relative paths and work under /maru-poe2/. No secrets or account credentials are required.
+
+
+## POE2 filter editor (first version)
+Open `docs/filter.html`. Files are processed locally; no login, upload server or API.
+- Read a UTF-8 `.filter` (up to 2MB); inspect rule conditions, source lines and supported syntax.
+- Edit one existing rule's Show/Hide, font size, text/border colors and built-in alert sound.
+- Preserve original comments, BOM, line endings, rule order and unknown lines; original is not overwritten.
+- Simulate registered item fixtures with ordered first-match and Continue paths; missing data branches rather than assuming false.
+- Protected hides, unresolved visibility/style, unsupported directives and syntax errors block `.filter` download. A `.txt` draft is available.
+- Editing invalidates prior checks. Restore a rule or undo the last edit, then recheck.
+- Default fixtures are explicitly hypothetical rare tier 14/15/16 waystones in area 83; tiers 15/16 are protected. These are not whole-game coverage.
+- Import, custom audio, HasExplicitMod and partial-name matching are not fully supported. Complex upstream filters may remain blocked; this is intentional and visible.
+- Rule-derived fixtures use the first listed value, with one numeric boundary when available. Review their data/protection flags; this is not exhaustive generation.
+- The example is for editor testing, not a gameplay filter. Only PC local-file workflow is provided.
+
+Run `node tests/filter-engine.test.cjs` and `node tests/engine.test.cjs`.
+Official syntax: https://www.pathofexile.com/item-filter/about
+The site checker is not the GGG client parser and is not proof of current-patch compatibility.
