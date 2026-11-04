@@ -56,6 +56,7 @@ The site checker is not the GGG client parser and is not proof of current-patch 
 Filter rule search accepts case/spacing-insensitive English and Korean currency aliases (for example 디바인오브 / 신성한오브 / 딥 → Divine Orb). Alias matches inspect BaseType values, including names beyond the two shown in a rule title, and show the matching item beneath the result. The original filter text is unchanged. Run `node tests/filter-search.test.cjs [optional-local-filter-path]`.
 
 ## Researched Korean currency names and aliases
+Filter results show Korean primary labels and original English names together. The normal preview, item selectors, rarity/class summaries, and effect labels use Korean only. Unmapped names show an explicit Korean placeholder; original filter text, identifiers, and advanced raw inputs are preserved.
 The local search catalogue contains 673 bilingual item names, 10 search groups, 44 source-backed usage terms, and 136 clearly labeled search helpers (checked 2026-11-04). It covers currency and traded crafting materials, including essences, omens, liquids, catalysts, runes, and soul cores. It is a bounded snapshot, not every community nickname or a current-drop guarantee.
 
 Open `docs/currency-aliases.html` to inspect names, alias provenance, groups, and download the dictionary. Exact alias resolution takes priority, preventing tier abbreviations from matching lower tiers and `락` from expanding to every name containing 타락. Ordinary English/source-line search and source preservation continue to work.
