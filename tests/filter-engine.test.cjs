@@ -25,7 +25,8 @@ test('multiple block patches do not shift targets',()=>{const out=E.apply(E.pars
 test('protected hide blocks saving',()=>assert.ok(E.inspect('Show\n','Hide\n',[{name:'important',protected:true,item:{}}]).blocked));
 test('allowed hide recorded, not blocked',()=>{const d='Hide\n Class == "Other"\nShow\n';assert.equal(E.inspect('Show\n',d,[{name:'ordinary',protected:false,item:{Class:'Other'}},{name:'important',protected:true,item:{Class:'Waystones'}}]).blocked,false);});
 test('rare enumeration and OR values',()=>{const d=E.parse('Hide\n Rarity Normal Magic\nShow\n');assert.equal(E.evaluate(d,{Rarity:'Magic'}).status,'hide');assert.equal(E.evaluate(d,{Rarity:'Rare'}).status,'show');});
-test('unsupported string matching is uncertain',()=>assert.equal(E.evaluate(E.parse('Hide\n BaseType "Orb"\nShow\n'),{BaseType:'Divine Orb'}).status,'unknown'));
+test('partial string matching supported',()=>assert.equal(E.evaluate(E.parse('Hide\n BaseType "Orb"\nShow\n'),{BaseType:'Divine Orb'}).status,'hide'));
 test('normal and positional sound conflict detected',()=>assert.ok(E.parse('Show\n PlayAlertSound 1 200\n PlayAlertSoundPositional 2 200\n').issues.length));
 test('path explosion is explicitly unknown',()=>{const d=E.parse(('Show\n ItemLevel > 1\n Continue\n').repeat(10));const r=E.evaluate(d,{});assert.ok(r.truncated);assert.equal(r.status,'unknown');});
 console.log(`PASS ${count} filter-engine cases`);
+

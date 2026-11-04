@@ -1,0 +1,9 @@
+// Optional local integration check. The input file is never changed or uploaded.
+const fs=require('node:fs'),assert=require('node:assert/strict'),E=require('../docs/filter-engine.js'),S=require('../docs/filter-samples.js');
+if(!process.argv[2])throw Error('Pass a local .filter path');const source=fs.readFileSync(process.argv[2],'utf8'),d=E.parse(source);
+assert.deepEqual(d.issues,[]);assert.equal(E.apply(d,{}),source);
+const common={AreaLevel:83,ItemLevel:83,Rarity:'Rare',Identified:false,Corrupted:false,Mirrored:false,TwiceCorrupted:false,AlwaysShow:false,HasVaalUniqueMod:false,IsVaalUnique:false,AnyEnchantment:false,Quality:0,StackSize:1,Sockets:0,UnidentifiedItemTier:0,BaseArmour:0,BaseEvasion:0,BaseEnergyShield:0,Width:1,Height:1,GemLevel:0,HasExplicitMod:[],WaystoneTier:0};
+const fixtures=[14,15,16].map(t=>({name:'waystone '+t,protected:t>=15,item:{...common,Class:'Waystones',BaseType:'Waystone',WaystoneTier:t}}));const report=E.inspect(source,source,fixtures);assert.equal(report.blocked,false);for(const row of report.rows){assert.equal(row.after.status,'show');assert.equal(row.after.styleUncertain,false);}
+const target=d.blocks.find(b=>b.commands.some(c=>c.cmd==='BaseType'&&c.args.includes('Albino Rhoa Feather')));assert.ok(target);const samples=S.makeSamples(target,common);for(const f of samples){const r=E.evaluate(d,f.item);assert.equal(r.status,'show',f.name);assert.equal(r.styleUncertain,false);assert.equal(r.paths[0].trace.at(-1).id,target.id);}
+const changed=E.parse(E.apply(d,{[target.id]:{mode:'Hide',SetFontSize:'30'}}));assert.equal(E.evaluate(changed,samples[0].item).status,'hide');assert.equal(E.evaluate(d,samples[0].item).status,'show');assert.equal(E.inspect(source,E.apply(d,{[target.id]:{mode:'Hide'}}),[{...samples[0],protected:true}]).blocked,true);
+console.log('PASS local file:',d.blocks.length,'rules;',samples.length,'currency samples; waystones 14/15/16; lossless import; targeted edits; protected-hide blocking.');

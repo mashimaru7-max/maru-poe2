@@ -41,12 +41,12 @@ Open `docs/filter.html`. Files are processed locally; no login, upload server or
 - Protected hides, unresolved visibility/style, unsupported directives and syntax errors block `.filter` download. A `.txt` draft is available.
 - Editing invalidates prior checks. Restore a rule or undo the last edit, then recheck.
 - Default fixtures are explicitly hypothetical rare tier 14/15/16 waystones in area 83; tiers 15/16 are protected. These are not whole-game coverage.
-- Import, custom audio, HasExplicitMod and partial-name matching are not fully supported. Complex upstream filters may remain blocked; this is intentional and visible.
-- Rule-derived fixtures use the first listed value, with one numeric boundary when available. Review their data/protection flags; this is not exhaustive generation.
+- Import and custom audio remain unsupported. Exact/partial string matching, compact numeric operators, HasExplicitMod count predicates (given explicit modifier-name arrays), and legacy drop-sound flag arguments are supported. Relevant missing item inputs are explained with source lines. Unrelated unsupported blocks no longer poison a known item result; unsupported syntax still blocks game-file export.
+- The simulation picker generates hypothetical examples from the selected rule’s base names and satisfying condition values, plus the separately registered protection cases. Inputs and assumptions are visible and editable as JSON. Explicit modifier names are never invented; provide HasExplicitMod when required. This is not exhaustive generation.
 - The example is for editor testing, not a gameplay filter. Only PC local-file workflow is provided.
 
 Run `node tests/filter-engine.test.cjs` and `node tests/engine.test.cjs`.
-Run `node tests/filter-preview.test.cjs` for selected-rule appearance checks.
+Run `node tests/filter-preview.test.cjs` and `node tests/filter-simulation.test.cjs` for preview and simulation regressions. An optional `node tests/filter-real-file.cjs <local-filter-path>` integration check reads an existing compatible filter without changing or uploading it.
 
 The default preview renders names and valid visual settings directly from the selected rule, side by side before/after. It remains available when other rules use unsupported syntax. Hidden labels are shown dimmed for editing. Missing settings use illustrative defaults; Continue and actual whole-filter matching can change the final appearance. Whole-filter simulation is a separate preview mode and remains the only path used by export validation. On mobile the appearance panel sits between the rule list and editor.
 Official syntax: https://www.pathofexile.com/item-filter/about
