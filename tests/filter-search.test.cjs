@@ -1,0 +1,9 @@
+const assert=require('node:assert/strict'),E=require('../docs/filter-engine.js'),S=require('../docs/filter-search.js');
+const source='Show\n BaseType == "Albino Rhoa Feather" "Divine Orb"\n SetFontSize 45\nShow\n BaseType == "Chaos Orb"\nShow\n BaseType == "Perfect Exalted Orb"\nShow\n BaseType == "Vaal Orb"\n';const d=E.parse(source),match=(i,q)=>S.find(d.blocks[i],q,source.slice(d.blocks[i].start,d.blocks[i].end),'').matched;
+for(const q of ['디바인오브','디바인 오브','신성한오브','신성한 오브','딥','디바인',' DIVINE ORB ','divineorb','신성한 오브'.normalize('NFD')]){assert.equal(match(0,q),true,q);assert.equal(match(1,q),false,q);}
+assert.deepEqual(S.find(d.blocks[0],'딥').names,['Divine Orb']);
+assert.equal(match(1,'카옵'),true);assert.equal(match(2,'엑잘'),true);assert.equal(match(3,'바알오브'),true);assert.equal(match(0,'45'),true);assert.equal(match(0,'없는아이템'),false);assert.equal(match(0,''),true);
+const commentOnly=E.parse('Show # Divine Orb\n BaseType == "Chaos Orb"\n').blocks[0];assert.equal(S.find(commentOnly,'딥','Show # Divine Orb\n BaseType == "Chaos Orb"').matched,false,'alias expansion must match item names, not unrelated comments');
+assert.equal(E.apply(d,{}),source,'search cannot change filter text');
+console.log('PASS: requested aliases, spacing, English case, decomposed Korean, other currencies, hidden names in multi-item rules, no alias match from unrelated comments, source preserved');
+if(process.argv[2]){const fs=require('node:fs'),src=fs.readFileSync(process.argv[2],'utf8'),doc=E.parse(src);const ids=q=>doc.blocks.filter(b=>S.find(b,q,src.slice(b.start,b.end),'').matched).map(b=>b.id);const expected=doc.blocks.filter(b=>b.commands.some(c=>c.cmd==='BaseType'&&c.args.includes('Divine Orb'))).map(b=>b.id);assert.ok(expected.length);for(const q of ['디바인오브','신성한오브','딥'])assert.deepEqual(ids(q),expected,q);console.log('PASS local 450-rule filter: all three requested aliases find the actual Divine Orb rule(s):',expected.map(i=>i+1).join(', '));}

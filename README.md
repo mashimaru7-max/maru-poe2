@@ -52,3 +52,5 @@ The default preview renders names and valid visual settings directly from the se
 Official syntax: https://www.pathofexile.com/item-filter/about
 The site checker is not the GGG client parser and is not proof of current-patch compatibility.
 
+
+Filter rule search accepts case/spacing-insensitive English and Korean currency aliases (for example 디바인오브 / 신성한오브 / 딥 → Divine Orb). Alias matches inspect BaseType values, including names beyond the two shown in a rule title, and show the matching item beneath the result. The original filter text is unchanged. Run `node tests/filter-search.test.cjs [optional-local-filter-path]`.
