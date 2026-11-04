@@ -46,5 +46,9 @@ Open `docs/filter.html`. Files are processed locally; no login, upload server or
 - The example is for editor testing, not a gameplay filter. Only PC local-file workflow is provided.
 
 Run `node tests/filter-engine.test.cjs` and `node tests/engine.test.cjs`.
+Run `node tests/filter-preview.test.cjs` for selected-rule appearance checks.
+
+The default preview renders names and valid visual settings directly from the selected rule, side by side before/after. It remains available when other rules use unsupported syntax. Hidden labels are shown dimmed for editing. Missing settings use illustrative defaults; Continue and actual whole-filter matching can change the final appearance. Whole-filter simulation is a separate preview mode and remains the only path used by export validation. On mobile the appearance panel sits between the rule list and editor.
 Official syntax: https://www.pathofexile.com/item-filter/about
 The site checker is not the GGG client parser and is not proof of current-patch compatibility.
+

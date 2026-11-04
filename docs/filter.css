@@ -13,3 +13,17 @@
 @media(prefers-reduced-motion:reduce){.filter-page *{scroll-behavior:auto!important}}
 
 .filter-page .hero{height:auto;min-height:132px}.filter-page .hero h1{word-break:keep-all}.filter-page .hero-copy>p:last-child{word-break:keep-all}@media(max-width:760px){.filter-page .hero{height:auto;min-height:122px}}@media(max-width:440px){.filter-page .hero{height:auto;min-height:119px}}
+
+
+/* The edit preview remains visible independently of the compatibility checker. */
+.preview-panel{position:sticky;top:16px;z-index:2;align-self:start}
+.preview-modes{display:flex;gap:6px;margin:15px 0 12px;background:#11251b;padding:5px;border-radius:9px}.preview-modes button{flex:1;border:0;border-radius:6px;padding:10px 7px;background:transparent;color:#c8d5c5;font-size:12px}.preview-modes button[aria-pressed=true]{background:#e7cb91;color:#1c3024;font-weight:700}
+.preview-rule-name{font-size:13px!important;line-height:1.7;color:#fff4d8!important;margin:10px 0 14px;overflow-wrap:anywhere}
+.appearance-heading{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px;color:#c2ceb9;margin:0 0 8px}.appearance-heading span:last-child{color:#f2d394}
+.appearance-gallery{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1px;background:#42523d;border:1px solid #59674c;border-radius:9px;overflow:auto;max-height:360px}
+.appearance-cell{min-width:0;padding:22px 9px;background:radial-gradient(ellipse at center,#30402a,#122418);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;min-height:90px}
+.appearance-cell:nth-child(even){background:radial-gradient(ellipse at center,#39482e,#172a1b)}
+.appearance-cell .loot-label{font-family:Georgia,'Noto Serif KR',serif;font-weight:500;line-height:1.35;padding:3px 6px;max-width:100%;overflow-wrap:anywhere;border-width:2px;flex-shrink:0}
+.appearance-cell.is-hidden .loot-label{opacity:.5}.appearance-hidden{font-size:10px;color:#ffd5b0;text-align:center}
+.appearance-meta{color:#e7d2aa!important;font-size:11px;line-height:1.8;margin:12px 0 5px;overflow-wrap:anywhere}.appearance-note{color:#b9c9b1!important;font-size:11px;line-height:1.8;margin:5px 0}.preview-panel #morePreviewItems{color:#e7cb91;border:1px solid #738360;border-radius:6px;margin-top:10px;width:100%}.preview-panel [hidden]{display:none!important}
+@media(max-width:760px){.preview-panel{position:static;margin:18px 0}.filter-catalog .preview-panel{padding:17px}.appearance-cell{padding:18px 7px}.appearance-gallery{max-height:290px}.appearance-heading{font-size:11px}.filter-page .preview-modes button{font-size:12px}.preview-rule-name{font-size:12px!important}}

@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),E=require('../docs/filter-engine.js'),P=require('../docs/filter-preview.js');
+const source='Show\n FutureCondition 3\n\nShow\n BaseType "Blacksmith\'s Whetstone" "Greater Orb of Transmutation" "Armourer\'s Scrap" "Artificer\'s Orb" "Chaos Orb"\n SetFontSize 42\n SetTextColor 255 100 20 180\n SetBorderColor 0 255 0\n SetBackgroundColor 0 0 0 220\n PlayAlertSound 3 200\n';
+const d=E.parse(source),p=P.appearance(d.blocks[1]);
+assert.equal(E.evaluate(d,{BaseType:"Blacksmith's Whetstone"}).status,'unknown');
+assert.equal(p.names.length,5);assert.equal(p.names[0],"Blacksmith's Whetstone");assert.equal(p.style.SetFontSize,'42');assert.equal(p.style.SetTextColor,'255 100 20 180');assert.equal(p.hidden,false);
+const changed=E.parse(E.apply(d,{1:{mode:'Hide',SetFontSize:'45',SetTextColor:'10 20 30 180'}}));
+assert.equal(P.appearance(changed.blocks[1]).hidden,true);assert.equal(P.appearance(changed.blocks[1]).style.SetTextColor,'10 20 30 180');assert.equal(P.appearance(d.blocks[1]).style.SetFontSize,'42');
+assert.equal(P.appearance(E.parse('Show\n Class == "Waystones"\n Continue\n').blocks[0]).continues,true);
+assert.deepEqual(P.appearance(E.parse('Show\n').blocks[0]).names,['아이템 이름 · 예시']);
+assert.equal(P.appearance(E.parse('Show\n SetFontSize 999\n').blocks[0]).style.SetFontSize,undefined);
+assert.ok(E.inspect(source,source,[{name:'protected',protected:true,item:{}}]).blocked,'appearance must never bypass export checks');
+console.log('PASS: selected names, unsupported filter preview, alpha, live patches, hidden ghost, Continue, defaults, invalid style, unchanged export blocking');
