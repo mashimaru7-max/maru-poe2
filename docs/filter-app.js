@@ -55,7 +55,8 @@ function setPreviewMode(simulation){$('ruleAppearance').hidden=simulation;$('sim
  $('appearanceItem').addEventListener('change',()=>{previewAll=false;renderAppearance();});
  $('rulePreviewMode').addEventListener('click',()=>setPreviewMode(false));$('simulationPreviewMode').addEventListener('click',()=>setPreviewMode(true));$('morePreviewItems').addEventListener('click',()=>{previewAll=!previewAll;renderAppearance();});
  const previewPanel=document.querySelector('.preview-panel'),previewHome=document.querySelector('.filter-results'),mobilePreview=window.matchMedia('(max-width:760px)');
- function placePreview(){if(mobilePreview.matches)$('ruleEditor').before(previewPanel);else previewHome.prepend(previewPanel);if(doc)renderAppearance();}
+ const checksLayout=document.createElement('div');checksLayout.className='validation-workspace';document.querySelector('.filter-workspace').after(checksLayout);checksLayout.append($('savePanel'),document.querySelector('.test-panel'));
+ function placePreview(){previewHome.hidden=mobilePreview.matches;if(mobilePreview.matches)$('ruleEditor').before(previewPanel);else previewHome.prepend(previewPanel);if(doc)renderAppearance();}
  mobilePreview.addEventListener('change',placePreview);placePreview();
  for(let n=1;n<=45;n++){const o=document.createElement('option');o.value=String(n);o.textContent=String(n);$('editFont').append(o);}for(let n=1;n<=16;n++){const o=document.createElement('option');o.value=String(n);o.textContent='기본 알림 '+n;$('editSound').append(o);}
 $('pickFilter').addEventListener('click',()=>$('filterFile').click());$('mobileToSave').addEventListener('click',()=>$('savePanel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}));
