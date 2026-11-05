@@ -17,14 +17,23 @@ test('the full option starting with 최대 wins over a comparison word',()=>{
  const m=parse('최대이속35 신발');assert.deepEqual(m.conditions,[{key:'move',max:35}]);
 });
 test('all plain explicit Korean labels keep their exact intended ID or offer it as an ambiguity',()=>{
- for(const s of D.stats.filter(s=>s.type==='explicit'&&s.nameKo)){const m=parse(s.nameKo.replace(/[#%+]/g,''));const ids=[...m.conditions.map(c=>E.definition(c.key,D).id),...m.ambiguities.flatMap(a=>a.choices.map(k=>E.definition(k,D).id))];assert.ok(ids.includes(s.id),s.id+' '+s.nameKo);assert.equal(m.unknown,'',s.id);assert.equal(m.errors.length,0,s.id);assert.equal(m.itemId,null,s.id);}
+ for(const s of D.stats.filter(s=>s.type==='explicit'&&s.nameKo)){const m=parse(s.nameKo.replace(/[#%+]/g,''));const ids=[...m.conditions.map(c=>E.definition(c.key,D).id),...m.ambiguities.flatMap(a=>a.choices.map(k=>E.definition(k,D).id))];assert.ok(ids.includes(s.id),s.id+' '+s.nameKo);assert.equal(m.unknown,'',s.id);assert.equal(m.errors.length,0,s.id);assert.equal(m.itemId,null,s.id);assert.equal(m.conditions.length+m.ambiguities.length,1,s.id+' must not add extra conditions');}
 });
 test('formal Korean sentences with a numeric slot in the middle preserve numbers and IDs',()=>{
  for(const [s,id,n]of [['공격 속도 15% 증가 활','explicit.stat_210067635',15],['공격 속도 15% 증가 장갑','explicit.stat_681332047',15],['1초마다 생명력 12 재생 반지','explicit.stat_3325883026',12],['소환수가 주는 피해 30% 증가 투구','explicit.stat_1589917703',30]]){const m=parse(s);assert.equal(m.unknown,'',s);assert.equal(m.errors.length,0,s);assert.equal(m.ambiguities.length,0,s);const row=query(s).stats[0].filters.find(x=>x.id===id);assert.deepEqual(row?.value,{min:n},s);}
  assert.throws(()=>query('공격속도15%증가미만 활'));
 });
+test('all 1394 supported single-slot formal Korean modifiers retain the exact ID and number',()=>{
+ let checked=0;
+ for(const s of D.stats.filter(s=>s.type==='explicit'&&s.nameKo&&!s.numericUnsupported&&(s.nameKo.match(/#/g)||[]).length===1)){const m=parse(s.nameKo.replace('#','17')),rows=[...m.conditions,...m.ambiguities.flatMap(a=>a.choices.map(key=>({key,...a.bounds})))],r=rows.find(r=>E.definition(r.key,D)?.id===s.id);assert.ok(r,s.id);assert.equal(r.min,17,s.id);assert.equal(m.unknown,'',s.id);assert.equal(m.errors.length,0,s.id);assert.equal(m.conditions.length+m.ambiguities.length,1,s.id);checked++;}
+ assert.equal(checked,1394);
+});
 test('an all-category ambiguous local/global choice stays resolved after text edits',()=>{
  let m=parse('공속15'),a=m.ambiguities[0];assert.ok(a);let raw=E.resolveInput(m.raw,a,'attack',D);m=parse(raw+' 생명100');assert.equal(m.ambiguities.length,0);assert.ok(m.conditions.some(c=>E.definition(c.key,D).id==='explicit.stat_681332047'&&c.min===15));
+});
+test('canonical selection and shorthand for the same trade ID merge and conflicting bounds block',()=>{
+ const label=E.canonicalOption(E.definition('attack',D));assert.throws(()=>query(label+'15이하 공속20 장갑'));
+ const q=query(label+'25이하 공속20 장갑');assert.equal(q.stats[0].filters.length,1);assert.deepEqual(q.stats[0].filters[0].value,{min:20,max:25});
 });
 test('selection controls serialize each verified group and exact option ID',()=>{
  for(const d of D.selections)for(const o of d.options){const m={...parse('반지'),raw:'',selections:{[d.id]:o.id}};const q=E.buildQuery(m,D);assert.equal(q.filters[d.group].filters[d.id].option,o.id);}
