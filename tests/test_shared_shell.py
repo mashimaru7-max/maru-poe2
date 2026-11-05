@@ -29,6 +29,7 @@ class SharedBuildTests(unittest.TestCase):
                 if tag == 'a' and self.in_tabs: self.tabs.append(d)
             def handle_endtag(self, tag):
                 if tag == 'nav': self.in_tabs = False
+        self.assertTrue((ROOT / 'docs/assets/workshop-companions.webp').is_file())
         for name, html in build.render_pages().items():
             p = Read(); p.feed(html)
             self.assertEqual([t['href'] for t in p.tabs], list(build.PAGES))
@@ -36,6 +37,7 @@ class SharedBuildTests(unittest.TestCase):
             self.assertEqual(next(t['href'] for t in p.tabs if t.get('aria-current') == 'page'), name)
             self.assertEqual(len(p.ids), len(set(p.ids)), name)
             self.assertEqual(html.count('site-shell.css?v='), 1)
+            self.assertEqual(html.count('workshop-theme.css?v='), 1)
             self.assertEqual((ROOT / 'docs' / name).read_text(encoding='utf-8'), html)
 
     def test_desktop_serves_the_same_built_pages(self):
