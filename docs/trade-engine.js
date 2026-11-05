@@ -82,12 +82,21 @@ function parse(raw,categoryId,data){
   if(stat.rangeStat&&n!==undefined&&!alias.includes('평균'))errors.push(stat.name+': 두 끝값을 지정하는 검색과 평균값 검색은 달라요. 옵션만 원하면 이름만, 평균 수치를 원하면 ‘'+(stat.aliases?.find(a=>a.includes('평균'))||canonicalOption(stat)+'평균')+'20이상’처럼 입력해 주세요.');conditions.push(row);return';'.repeat(all.length);
  });
  const generic=new RegExp('저항(?:('+number+')(%)?(이상|이하)?)?','g');text=text.replace(generic,(all,n,percent,suffix,offset)=>{ambiguities.push({id:'resistance-'+ambiguities.length,label:all,value:n===undefined?undefined:Number(n),bound:suffix==='이하'?'max':'min',choices:['fire','cold','lightning','chaos'],span:{start:offset,end:offset+all.length},source:all});return';'.repeat(all.length);});
- text=text.replace(/[·,;\/]/g,'').replace(/찾아주세요|찾아줘|검색해주세요|검색해줘|원해요|원해|짜리/g,'');if(price)text=text.replace(/예산/g,'');const merged=mergeMappedConditions(conditions,data);errors.push(...merged.errors);
- return{raw,categoryId,itemId,itemAmbiguities,selections,conditions:merged.conditions,ambiguities,errors,unknown:text?text.slice(0,240):'',price};
+ text=text.replace(/[·,;\/]/g,';').replace(/찾아주세요|찾아줘|검색해주세요|검색해줘|원해요|원해|짜리/g,m=>';'.repeat(m.length));if(price)text=text.replace(/예산/g,';;');const unknownSpans=[...text.matchAll(/[^;]+/g)].map(m=>({start:m.index,end:m.index+m[0].length}));const merged=mergeMappedConditions(conditions,data);errors.push(...merged.errors);
+ return{raw,categoryId,itemId,itemAmbiguities,selections,conditions:merged.conditions,ambiguities,errors,unknown:text.replace(/;/g,'').slice(0,240),unknownSpans,price};
 }
 // Turn an explicitly selected meaning into text. Prefix normalization maps the
 // compact parser span back to the original spacing/Unicode without editing neighbours.
 function resolveInput(raw,ambiguity,key,data){if(!ambiguity.choices.includes(key))throw Error('지원하는 선택지를 골라 주세요.');const d=definition(key,data);if(!d||!ambiguity.span)return null;const full=normalize(raw),{start,end}=ambiguity.span;if(full.slice(start,end)!==ambiguity.source)throw Error('입력이 바뀌었어요. 새 입력의 선택지를 확인해 주세요.');const left=full.slice(0,start),right=full.slice(0,end);let from=-1,to=-1;for(let i=0;i<=raw.length;i++){const prefix=normalize(raw.slice(0,i));if(prefix===left)from=i;if(prefix===right&&to<0)to=i;}if(from<0||to<from)throw Error('선택한 표현의 위치를 확인하지 못했어요.');const aliases={fire:'화저',cold:'냉저',lightning:'번저',chaos:'카저',totalElemental:'원소저항합계'},name=aliases[key]||(data.extended?canonicalOption(d):d.aliases?d.aliases[0]:canonicalOption(d)),bounds=ambiguity.bounds|| (ambiguity.value===undefined?{}:{[ambiguity.bound]:ambiguity.value});let replacement=name;if(bounds.min!==undefined&&bounds.max!==undefined)replacement+=bounds.min+'~'+bounds.max;else if(bounds.min!==undefined)replacement+=bounds.min+'이상';else if(bounds.max!==undefined)replacement+=bounds.max+'이하';return raw.slice(0,from)+replacement+raw.slice(to);}
+// Remove only unconsumed spans; retain the original recognized clauses and state.
+function removeUnknownInput(raw,model){
+ if(raw!==model.raw)throw Error('입력이 바뀌었어요. 다시 확인해 주세요.');
+ const full=normalize(raw),ranges=[];
+ for(const span of model.unknownSpans||[]){let from=-1,to=-1;for(let i=0;i<=raw.length;i++){const prefix=normalize(raw.slice(0,i));if(prefix===full.slice(0,span.start))from=i;if(prefix===full.slice(0,span.end)&&to<0)to=i;}if(from<0||to<from)throw Error('미해석 표현의 위치를 확인하지 못했어요. 입력에서 직접 수정해 주세요.');ranges.push([from,to]);}
+ if(model.unknown&&!ranges.length)throw Error('제외할 표현의 위치를 확인하지 못했어요.');
+ for(const[from,to]of ranges.reverse())raw=raw.slice(0,from)+' '+raw.slice(to);
+ return raw.trim();
+}
 function resolveItemInput(raw,a,key,data){const item=itemFor(key,data);if(!item||!a.choices.includes(key))throw Error('아이템 후보를 다시 선택하세요.');const d={key,id:key,aliases:[item.name+(item.baseKo?' ('+item.baseKo+')':'')]};return resolveInput(raw,{...a,choices:[key]},key,{...data,curated:[...data.curated,d]});}
 function combine(model,manual,resolutions,data){const chosen=[...model.conditions];for(const a of model.ambiguities){const key=resolutions[a.id];if(key&&a.choices.includes(key))chosen.push({key,...(a.bounds||{}),...(a.value===undefined?{}:{[a.bound]:a.value})});}for(const r of manual){const def=definition(r.key,data);if(!def)continue;chosen.push({...r});}const merged=mergeMappedConditions(chosen,data);return{...model,conditions:merged.conditions,ambiguities:model.ambiguities.filter(a=>!a.choices.includes(resolutions[a.id])),errors:[...model.errors,...merged.errors]};}
 function propertyAllowed(d,model,data){if(data.modDb){const allowed=ModDB.propertyAllowed(d,model,data);if(allowed!==null)return allowed;}if(model.categoryId==='__all__')return true;if(d.families?.includes(itemFor(model.itemId,data)?.itemClass))return true;return d.categories?d.categories.includes(model.categoryId):data.properties[model.categoryId]?.includes(d.id);}
@@ -110,5 +119,5 @@ function reconcileEdits(previous,next,manual,overrides,excluded){
   if(independent||old!=='[]'&&old===current){if(Object.hasOwn(overrides,key))kept[key]=overrides[key];if(excluded.includes(key))removed.push(key);}}
  return{overrides:kept,excluded:removed};
 }
-const api={validateSelections,eligibleKeys,readSelections,propertyAllowed,propertySuggested,resolveItemInput,findItems,itemFor,categoryAllowsItem,canonicalOption,reconcileEdits,normalize,parse,combine,definition,mergeConditions,compatibility,blockingCompatibility,buildQuery,stripCategory,lexicon,resolveInput};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.TradeEngine=api;
+const api={removeUnknownInput,validateSelections,eligibleKeys,readSelections,propertyAllowed,propertySuggested,resolveItemInput,findItems,itemFor,categoryAllowsItem,canonicalOption,reconcileEdits,normalize,parse,combine,definition,mergeConditions,compatibility,blockingCompatibility,buildQuery,stripCategory,lexicon,resolveInput};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.TradeEngine=api;
 })(typeof window!=='undefined'?window:globalThis);
