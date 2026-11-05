@@ -24,6 +24,7 @@ def render_pages():
         common = shell.replace('{{TITLE}}', title).replace('{{DESCRIPTION}}', description)
         for key, _, _ in PAGES.values():
             common = common.replace('{{NAV_' + key + '}}', 'aria-current="page"' if key == active else '')
+        common = common.replace('{{MASCOT}}', {'INDEX':'welcome','TRADE':'inspect','FILTER':'rune','DICTIONARY':'sleep'}[active])
         common = common.replace('{{CONTENT}}', match[2])
         output = source[:match.start()] + match[1] + common + match[3] + source[match.end():]
         output = output.replace('{{SHARED_STYLES}}', f'<link rel="stylesheet" href="site-shell.css?v={digest}"><link rel="stylesheet" href="workshop-theme.css?v={digest}">')

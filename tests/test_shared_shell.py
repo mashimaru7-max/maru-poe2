@@ -29,7 +29,7 @@ class SharedBuildTests(unittest.TestCase):
                 if tag == 'a' and self.in_tabs: self.tabs.append(d)
             def handle_endtag(self, tag):
                 if tag == 'nav': self.in_tabs = False
-        self.assertTrue((ROOT / 'docs/assets/workshop-companions.webp').is_file())
+        self.assertTrue((ROOT / 'docs/assets/mascot-stickers.webp').is_file())
         for name, html in build.render_pages().items():
             p = Read(); p.feed(html)
             self.assertEqual([t['href'] for t in p.tabs], list(build.PAGES))
