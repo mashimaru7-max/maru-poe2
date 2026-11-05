@@ -13,3 +13,5 @@ body.trade-page{margin:0;background:#f1efe9}#tradeApp{max-width:1320px;margin:au
 #tradeApp .mt-market-price{border:1px solid #52654f;border-radius:9px;padding:12px;margin:14px 0}#tradeApp .mt-market-price>strong{color:#f0e9d9}#tradeApp .mt-market-price .mt-small{color:#c1cdb9;margin-bottom:0}#tradeApp .mt-market-price input{width:100%}#tradeApp .mt-market-price .mt-controls-label{margin:8px 0}
 
 @media(max-width:440px){#tradeApp .mt-parse{flex-direction:column;align-items:flex-start;gap:2px}#tradeApp .mt-parse small{display:block}}
+#tradeApp .mt-market-price .mt-bound-fields label{color:#e2e8d8}#tradeApp .mt-market-price input{color:#24372c;background:#fffefb}#tradeApp .mt-market-price .mt-edit-actions{display:flex;gap:8px;flex-wrap:wrap}#tradeApp .mt-market-price .mt-edit-actions button{flex:1;min-width:100px;background:#315d48;color:#fff5dd;border:1px solid #90a580}#tradeApp .mt-market-price .mt-edit-actions button:last-child{background:#263e2e;color:#eee9db}
+@media(max-width:440px){#tradeApp .mt-right .mt-controls-label{display:flex;flex-direction:column;align-items:stretch;gap:5px}#tradeApp .mt-right .mt-controls-label select{width:100%;max-width:100%}}
