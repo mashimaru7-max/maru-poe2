@@ -55,16 +55,24 @@ def build(filters_root,exchange_root):
   x['aliases']=[v['text'] for v in a.get('aliases',[]) if len(v.get('text',''))>1]
   if x['nameEn']=='Headhunter':x['aliases'].append('헤헌')
  # Every label is joined to exact IDs from the Korean upstream dataset.
+ trade_scope={s['id']: '(Local)' in s['text'] for s in f['stats']}
+ scope_overrides={}
+ for row in stats:
+  for ids in (row.get('trade',{}).get('ids') or {}).values():
+   if any(trade_scope.get(sid,False) for sid in ids):
+    for sid in ids:
+     if sid in trade_scope:scope_overrides[sid.split('.')[-1]]=trade_scope[sid]
  statmap={};unsupported_stats=[];types={'explicit':'명시','implicit':'고정','fractured':'분열','desecrated':'훼손','rune':'룬','crafted':'제작','sanctum':'유물','skill':'스킬','enchant':'인챈트','pseudo':'합산'}
  for x in stats:
   if x.get('trade',{}).get('option') is not None:
    unsupported_stats.extend(sid for ids in (x['trade'].get('ids') or {}).values() for sid in ids);continue
   matcher=next((m for m in x.get('matchers',[]) if m.get('string') and not m.get('negate') and 'value' not in m),None)
   if not matcher:continue
-  ko=matcher['string'];local=x.get('id','').startswith('local_')
+  ko=matcher['string'];matcher_local=x.get('id','').startswith('local_')
   for typ,ids in (x.get('trade',{}).get('ids') or {}).items():
    if typ not in types:continue
    for sid in ids:
+    local=scope_overrides.get(sid.split('.')[-1],matcher_local)
     statmap.setdefault(sid,{'id':sid,'nameKo':ko,'nameEn':x['ref']+(' (Local)' if local else ''),'name':x['ref'],'type':typ,'local':local,'numericUnsupported':bool(x.get('trade',{}).get('inverted') or x.get('trade',{}).get('count')),'rangeStat':bool(re.match(r'^Adds # to # .+ Damage',x['ref']))})
  # Keep upstream eligibility as positive evidence, not an exhaustive prohibition list.
  eligibility=f['eligibility'];unique_elig=f['uniqueEligibility'];properties={k:list(v) for k,v in f['equipmentFilterIdsByCategory'].items()}
