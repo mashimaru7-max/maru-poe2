@@ -53,5 +53,13 @@ function buildQuery(model,data,options={}){if(blockingCompatibility(model,data).
  if(model.price){const p=model.price;if(!['divine','exalted','chaos'].includes(p.currency))throw Error('가격 화폐를 확인하세요.');const price={option:p.currency};for(const k of ['min','max'])if(p[k]!==undefined){if(!Number.isFinite(p[k])||p[k]<0||p[k]>100000000)throw Error('가격 수치를 확인하세요.');price[k]=p[k];}if(price.min!==undefined&&price.max!==undefined&&price.min>price.max)throw Error('가격 범위가 충돌해요.');filters.trade_filters={filters:{price}};}
  const status=options.status||'any';if(!['available','securable','onlineleague','online','any'].includes(status))throw Error('지원하는 구매 방식을 선택하세요.');return{status:{option:status},stats:[{type:'and',filters:stats}],filters};}
 function stripCategory(raw,data){let text=raw;const aliases=data.categories.flatMap(c=>c.aliases).sort((a,b)=>b.length-a.length);for(const a of aliases)text=text.replace(new RegExp(escape(a),'gi'),'');return text.trim();}
-const api={normalize,parse,combine,definition,mergeConditions,compatibility,blockingCompatibility,buildQuery,stripCategory,lexicon,resolveInput};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.TradeEngine=api;
+// Keep applied edits only while the text condition they edit is unchanged.
+function reconcileEdits(previous,next,manual,overrides,excluded){
+ const signature=(rows,key)=>JSON.stringify(rows.filter(r=>r.key===key).map(r=>[r.min??null,r.max??null]));
+ const keys=new Set([...Object.keys(overrides),...excluded]),kept={},removed=[];
+ for(const key of keys){const old=signature(previous,key),current=signature(next,key),independent=old==='[]'&&current==='[]'&&manual.some(r=>r.key===key);
+  if(independent||old!=='[]'&&old===current){if(Object.hasOwn(overrides,key))kept[key]=overrides[key];if(excluded.includes(key))removed.push(key);}}
+ return{overrides:kept,excluded:removed};
+}
+const api={reconcileEdits,normalize,parse,combine,definition,mergeConditions,compatibility,blockingCompatibility,buildQuery,stripCategory,lexicon,resolveInput};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.TradeEngine=api;
 })(typeof window!=='undefined'?window:globalThis);

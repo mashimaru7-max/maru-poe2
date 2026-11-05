@@ -1,0 +1,27 @@
+/* One navigation layout shared by all three tools. Loaded after page styles. */
+body{font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body .shell,body #tradeApp{box-sizing:border-box;max-width:1320px;margin:0 auto;padding:0 24px 24px}
+body .site-header,body.filter-page .site-header{box-sizing:border-box;height:82px;min-height:82px;max-width:1320px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+body #tradeApp .site-header{height:82px;min-height:82px;padding:0}
+body .site-tools,body #tradeApp .site-tools{box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%;margin:0 0 18px;padding:5px;border:1px solid #d7dbcf;border-radius:12px;background:#e6e8df;font:600 14px/1.4 'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body .site-tools a,body #tradeApp .site-tools a{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:46px;margin:0;padding:10px 8px;border:0;border-radius:8px;color:#435746;background:transparent;text-decoration:none;text-align:center;white-space:nowrap;font:inherit;letter-spacing:0;box-shadow:none}
+body .site-tools a[aria-current=page],body #tradeApp .site-tools a[aria-current=page]{color:#fff;background:#315d48;box-shadow:0 2px 5px #193c261a}
+body .site-tools a:focus-visible,body #tradeApp .site-tools a:focus-visible{outline:3px solid #aa8041;outline-offset:2px}
+body .hero,body.filter-page .hero,body #tradeApp .mt-hero{box-sizing:border-box;height:auto;min-height:152px;margin:0 0 22px;border-radius:16px}
+body .hero-copy,body.filter-page .hero-copy{padding:26px 30px}
+body #tradeApp .mt-hero{padding:26px 30px}
+body .hero h1,body.filter-page .hero h1,body #tradeApp .mt-hero h1{font-size:28px;line-height:1.35;letter-spacing:-1px;word-break:keep-all;white-space:normal;margin:0}
+body .hero h1 br{display:none}
+body .hero-copy>p:last-child,body.filter-page .hero-copy>p:last-child,body #tradeApp .mt-hero>p:last-child{font-size:13px;line-height:1.7;margin:12px 0 0}
+body .hero .eyebrow,body #tradeApp .mt-hero .mt-eyebrow{font-size:10px;line-height:1.6;letter-spacing:2px;margin:0 0 10px}
+@media(max-width:760px){
+ body .shell,body #tradeApp{padding:0 16px 24px}
+ body .site-header,body.filter-page .site-header{height:78px;min-height:78px;padding:0 16px}
+ body #tradeApp .site-header{height:78px;min-height:78px;padding:0}
+ body .site-tools,body #tradeApp .site-tools{margin:0 0 16px;font-size:13px}
+ body .hero,body.filter-page .hero,body #tradeApp .mt-hero{min-height:150px}
+ body .hero-copy,body.filter-page .hero-copy,body #tradeApp .mt-hero{padding:22px 20px}
+ body .hero h1,body.filter-page .hero h1,body #tradeApp .mt-hero h1{font-size:24px}
+ body .header-actions{gap:4px}body .header-actions .quiet{padding:6px;font-size:11px}
+}
+@media(max-width:360px){body .site-tools,body #tradeApp .site-tools{font-size:12px}body .brand,body #tradeApp .mt-brand{font-size:15px;gap:8px}}

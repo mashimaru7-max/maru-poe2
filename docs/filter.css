@@ -40,3 +40,10 @@
 .filter-rule .alias-match{color:#315d48;font-weight:600;font-size:11px;overflow-wrap:anywhere;line-height:1.6;margin-top:5px}
 
 .filter-rule .rule-english-name{color:#72806c;font-size:11px;font-weight:400;line-height:1.5;margin-top:3px;overflow-wrap:anywhere}.preview-panel .loot-label{font-family: "Malgun Gothic","Noto Sans KR",sans-serif}
+.filter-page .preview-panel[hidden]{display:none!important}
+.filter-page .micro,.filter-page .list-hint,.filter-page .source-help,.filter-page .source-limit,.filter-page .file-spec,.filter-page .filter-rule small,.filter-page .appearance-note,.filter-page .appearance-meta{font-size:13px;line-height:1.8}
+.filter-page .follow-guide{margin-top:14px;color:#435746;font-size:14px;line-height:1.8}
+.follow-guide summary{cursor:pointer;font-weight:600;min-height:44px;padding:10px 0}
+.follow-guide ol,.download-next-steps ol{padding-left:22px}
+.download-next-steps{margin-top:16px;padding:16px;background:#edf4e7;border:1px solid #b9cfa9;border-radius:9px;font-size:14px;line-height:1.8;color:#304e35;overflow-wrap:anywhere}
+.download-next-steps[hidden]{display:none}
