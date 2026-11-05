@@ -9,7 +9,7 @@ PAGES = {
     'index.html': ('INDEX', '인게임 검색', '상점·창고 옵션을 골라 검색식을 복사하세요.'),
     'trade.html': ('TRADE', '거래 검색', '아이템 조건을 만들고, 공식 거래소에서 확인하세요.'),
     'filter.html': ('FILTER', '아이템 필터', '필터 표시를 수정하고, 검사 후 저장하세요.'),
-    'currency-aliases.html': ('DICTIONARY', '재화 사전', '재화 이름과 약칭을 찾아 필터에 활용하세요.'),
+    'currency-aliases.html': ('DICTIONARY', '아이템 사전', '재화·장비·고유 아이템의 한글명·영문명·약칭을 검색하세요.'),
 }
 
 def render_pages():

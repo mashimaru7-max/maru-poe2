@@ -126,3 +126,8 @@ QA: all ten test files pass. Browser checks covered desktop and a 390px iframe v
 
 ## Mascot workshop theme
 `docs/workshop-theme.css` adds a shared clean ivory/slate/lavender theme with original crested-gecko and cat stickers. It is included by the Python builder on all four pages. `docs/assets/mascot-stickers.webp` is bundled locally, also included in the desktop build, and does not require a remote image host. The previous workbench and landscape banner are not used by this theme. The original art brief is in `ui/assets/mascot-art.md`.
+
+
+## 아이템 사전 확장 (2026-11-05)
+
+기존 재화 사전을 3,905종의 아이템 이름 검색으로 확장했습니다. 고유 아이템 766종, 한영 이름·약칭, 분류·유형, 100개 단위 페이지 이동, 전체 JSON을 지원합니다. `헤헌`도 검색됩니다. 데이터 범위·고정 원본·갱신·검사는 [ITEM_DICTIONARY.md](docs/ITEM_DICTIONARY.md)를 참고하세요.

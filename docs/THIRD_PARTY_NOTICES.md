@@ -31,3 +31,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+## Full item dictionary
+
+item-dictionary-data.js adapts name metadata from Kvan7/Exiled-Exchange-2,
+renderer/public/data/ko/items.ndjson at commit
+cca30662bf31eaf38bd711e2ec1a6b899a06c40e (2026-09-06; retrieved 2026-11-05).
+https://github.com/Kvan7/Exiled-Exchange-2
+
+Classification reuses the pinned metadata in trade-catalog.js. See
+TRADE_COVERAGE.md and licenses/trade-data-MIT.txt. The item DB license is
+licenses/trade-ko-MIT.txt. Full notices are included in the JSON export.
+Only names, categories and search aliases are projected; no item art or
+stat descriptions are copied. The DB does not verify current availability.
