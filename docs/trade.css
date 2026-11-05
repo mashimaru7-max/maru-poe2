@@ -9,3 +9,7 @@ body.trade-page{margin:0;background:#f1efe9}#tradeApp{max-width:1320px;margin:au
 @media(max-width:440px){#tradeApp .mt-manual input[type=search],#tradeApp .mt-bound-fields input,#tradeApp textarea,#tradeApp .mt-custom-league input{font-size:16px}#tradeApp .mt-global-nav a{font-size:11px}#tradeApp .mt-header-tools{max-width:115px;text-align:right;line-height:1.7}#tradeApp .mt-criterion{gap:7px}#tradeApp .mt-row-controls{max-width:45%}#tradeApp .mt-row-controls button{white-space:normal;min-height:40px}#tradeApp .mt-categories small{font-size:11px}#tradeApp .mt-hero h1{font-size:23px}#tradeApp .mt-info{font-size:11px}}
 
 #tradeApp #tradeInput::placeholder{color:#82877f;opacity:1}
+
+#tradeApp .mt-market-price{border:1px solid #52654f;border-radius:9px;padding:12px;margin:14px 0}#tradeApp .mt-market-price>strong{color:#f0e9d9}#tradeApp .mt-market-price .mt-small{color:#c1cdb9;margin-bottom:0}#tradeApp .mt-market-price input{width:100%}#tradeApp .mt-market-price .mt-controls-label{margin:8px 0}
+
+@media(max-width:440px){#tradeApp .mt-parse{flex-direction:column;align-items:flex-start;gap:2px}#tradeApp .mt-parse small{display:block}}
