@@ -14,7 +14,7 @@ PAGES = {
 
 def render_pages():
     shell = (ROOT / 'ui/shell.html').read_text(encoding='utf-8')
-    digest = hashlib.sha256((ROOT / 'docs/site-shell.css').read_bytes() + (ROOT / 'docs/workshop-theme.css').read_bytes()).hexdigest()[:12]
+    digest = hashlib.sha256(b''.join(path.read_bytes() for path in sorted((ROOT / 'docs').glob('*.css')))).hexdigest()[:12]
     result = {}
     for filename, (active, title, description) in PAGES.items():
         source = (ROOT / 'ui/pages' / filename).read_text(encoding='utf-8')
@@ -27,6 +27,7 @@ def render_pages():
         common = common.replace('{{MASCOT}}', {'INDEX':'welcome','TRADE':'inspect','FILTER':'rune','DICTIONARY':'sleep'}[active])
         common = common.replace('{{CONTENT}}', match[2])
         output = source[:match.start()] + match[1] + common + match[3] + source[match.end():]
+        output = re.sub(r'(href="(?:style|trade|filter|currency-aliases)\.css)\?[^"]+', lambda m: m[1] + '?v=' + digest, output)
         output = output.replace('{{SHARED_STYLES}}', f'<link rel="stylesheet" href="site-shell.css?v={digest}"><link rel="stylesheet" href="workshop-theme.css?v={digest}">')
         if '{{' in output:
             raise ValueError(f'Unresolved template marker: {filename}')
