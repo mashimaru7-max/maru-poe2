@@ -1,0 +1,45 @@
+# 아이템별 옵션 DB와 티어
+
+확인일: 2026-11-05. 게임 데이터 기준: RePoE POE2 0.5.5.5.
+
+이름 목록에서 베이스 아이템을 선택하면 해당 베이스의 실제 태그에 연결된 옵션 풀을 사용합니다. 종류만 선택하면 그 종류에 속하는 베이스들의 옵션 합집합을 표시합니다. 고유 아이템은 해당 고유의 고정 옵션을 사용하며 일반 베이스의 접사 풀을 섞지 않습니다. 기본 수치도 실제 베이스의 방어도·공격·정신력·소켓 자료를 기준으로 표시합니다.
+
+## 티어 사용
+
+1. 정확한 아이템 이름을 선택합니다.
+2. 옵션을 선택하고 DB의 접두·접미 그룹과 티어를 고릅니다.
+3. ‘해당 수치 범위’ 또는 ‘이상 수치’를 골라 DB 값을 적용하고 조건에 추가합니다.
+
+각 접사 그룹에서 요구 아이템 레벨이 가장 높은 단계를 DB T1로 표시합니다. 부여에 필요한 아이템 레벨도 함께 안내하지만 검색의 아이템 레벨 조건에 자동으로 추가하지 않습니다. 예를 들어 조잡한 활의 일반 공격 속도 DB T1은 17–19%, 모루 철퇴는 26–28%입니다.
+
+**거래소 요청에는 접사 티어 전용 조건이 없습니다.** 티어 선택은 표시 수치를 최소·최대 조건으로 바꿉니다. 복합 접사·강화·제작 등으로 합산된 수치는 겹칠 수 있으므로 실제 접사 티어를 확정하지 않습니다. 고유 고정 수치, 해석이 불확실한 복합 수치에는 일반 접사 티어를 만들지 않습니다. 아이템이나 수치를 바꾸면 이전 티어 표시는 무효화됩니다.
+
+## 연결 범위와 제한
+
+- 카탈로그 이름과 정확히 연결한 베이스 3,081개, 서로 다른 옵션 풀 281개, 원본 옵션 레코드 2,633개.
+- 고유 영문 이름 457개를 고정 옵션 자료에 연결했습니다. 변형별 현재 획득 가능성은 보증하지 않습니다.
+- 원본 옵션 중 270개는 한국어 거래 옵션 ID에 안전하게 연결하지 못했습니다. 이 값은 일반 옵션 레코드 기준이며 고유의 미연결 문구 수를 포함하지 않습니다. 화면의 미연결 DB 항목에서 원문을 확인할 수 있습니다. 임의 ID로 검색하지 않습니다.
+- Brynabas, Splinter of Loratta, The Immortan은 고유 옵션 자료가 없습니다. 자료 없는 이름에는 확인되지 않은 티어를 제공하지 않습니다.
+- 조건부 부여는 일반 부여와 구분합니다. 최신 매물과 공식 거래소의 전체 최신 ID를 실시간 검증한 자료는 아닙니다. ‘DB 밖의 전체 옵션도 보기’는 고급 검색용입니다.
+
+## 고정한 출처
+
+- [RePoE POE2](https://github.com/repoe-fork/poe2/tree/fbffebf2bd2a0ebc46dcf5b0b3640f94fb2677f6): `data/base_items.json`, `data/mods.json`, `data/mods_by_base.json`. 정확한 베이스 태그, 부여 풀, 접사 레벨과 수치.
+- [PoB data](https://github.com/repoe-fork/pob-data/tree/f49119fd4f5f7434f7c4910527e0a52448fe4b99): `pob-data/poe2/Bases` 및 `Uniques`. 베이스 수치·소켓과 고유 고정 옵션.
+- [PoE2DB](https://poe2db.tw/us/Unique_item): PoB에 없는 고유 이름의 정확한 개별 페이지. 요청 결과와 추출 문구는 `scripts/trade-db/unique-supplement.json`에 기록합니다.
+- [poe2-better-trade-filter](https://github.com/slickdomi/poe2-better-trade-filter/tree/ae8f72832392000ed6259d0d758bc8d8a3739c88): 기존 고정 `filters.json`의 정확한 거래 ID와 영문 템플릿, ID 매칭 보조 코드.
+- [Exiled Exchange 2](https://github.com/Kvan7/Exiled-Exchange-2/tree/cca30662bf31eaf38bd711e2ec1a6b899a06c40e): `renderer/public/data/ko/stats.ndjson`의 내부 스탯–거래 ID 연결. 한글 표시에는 기존 `trade-catalog.js` 자료도 사용합니다.
+
+## 생성과 검사
+
+원본 폴더에 RePoE JSON 3개, `ko-stats.ndjson`, PoB의 `pob-bases/*.json`, `uniques/*.json`을 두고, 원본 폴더의 상위에 고정 `trade-tier-source.json`을 둡니다. 위 커밋의 원본을 사용해야 합니다. RePoE 3개는 Git blob SHA도 확인합니다.
+
+```sh
+node scripts/build_trade_mod_db.cjs ../trade-db-raw
+node scripts/build_trade_mod_db.cjs ../trade-db-raw --check
+npm ci
+npm test
+npm run test:trade-dom
+```
+
+50개 Node 검사 및 별도 오프라인 jsdom 통합 검사 통과. 베이스별 옵션·속성, 모든 제공 티어의 수치 변환, 고유 분리, 화면에서 티어 선택·추가·수정, 실제 생성 쿼리 압축 해제, 저장·복원을 검사했습니다. jsdom 검사는 네트워크를 사용하지 않으며 실제 브라우저나 거래소 매물 검증을 대신하지 않습니다.

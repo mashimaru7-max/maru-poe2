@@ -1,0 +1,11 @@
+{
+  "name": "maru-poe2",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "test:trade-dom": "node tests/trade-mod-dom.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

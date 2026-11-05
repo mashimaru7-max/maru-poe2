@@ -1,5 +1,22 @@
 # Third-party name metadata
 
+## Exact-base modifier data (2026-11-05)
+
+trade-mod-data.js projects factual game data from repoe-fork/poe2 commit
+fbffebf2bd2a0ebc46dcf5b0b3640f94fb2677f6 and repoe-fork/pob-data commit
+f49119fd4f5f7434f7c4910527e0a52448fe4b99. Missing unique records are
+supplemented by individually attributed PoE2DB pages in
+scripts/trade-db/unique-supplement.json. Game data belongs to Grinding
+Gear Games. See TRADE_MOD_DB.md for source links and limitations.
+
+scripts/trade-db/matchStatIds.mjs and buildEligibility.mjs adapt helpers
+from slickdomi/poe2-better-trade-filter commit
+ae8f72832392000ed6259d0d758bc8d8a3739c88 under the MIT license retained in
+licenses/trade-data-MIT.txt. Internal stat mappings reuse Kvan7/Exiled-Exchange-2
+at the commit listed below, with licenses/trade-ko-MIT.txt retained.
+
+## Currency name metadata
+
 English–Korean name pairs in currency-aliases.js are adapted from
 Ifan24/poe2-market-arbitrage-desk, lib/currency-names.ko.json, commit
 cf20feaf67b555ea5fbbecd1c5c049193f0907d2 (retrieved 2026-11-04).

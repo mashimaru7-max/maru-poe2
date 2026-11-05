@@ -1,5 +1,9 @@
 # 거래 검색 확장 범위와 검증 기록
 
+## 아이템별 실제 DB 풀과 티어 적용 (2026-11-05)
+
+아래의 종류별 추천 수치 방식은 실제 베이스 데이터로 대체했습니다. 선택한 이름의 RePoE 옵션 풀과 PoB 기본 수치, 고유의 개별 고정 옵션을 사용합니다. 정확한 베이스를 선택하면 접사 그룹별 DB 티어를 선택하여 검색 수치로 적용할 수 있습니다. 출처·연결 범위·미연결 항목 및 티어의 한계는 [아이템별 옵션 DB와 티어](TRADE_MOD_DB.md)에 정리했습니다. Node 검사 50개 및 오프라인 화면 통합 검사를 통과했습니다.
+
 ## 기본 수치 표시 기준 보완 (2026-11-05)
 
 이전 ‘종류별 전용 조건’은 거래 필터의 지원 범위를 그대로 표시했습니다. 원본 [categoryFilterScoping.ts](https://github.com/slickdomi/poe2-better-trade-filter/blob/ae8f72832392000ed6259d0d758bc8d8a3739c88/packages/data-pipeline/src/categoryFilterScoping.ts)의 `hasSpiritStat`은 해당 종류의 옵션 문구에 Spirit이 언급되는지로 정신력 필드 존재를 추정합니다. 활의 일반적인 기본 수치라는 근거로 쓸 수 없는 추정 범위를 기본 목록에 노출한 문제였습니다.
