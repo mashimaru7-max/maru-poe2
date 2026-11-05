@@ -36,6 +36,6 @@ function bindVoice({Recognition,input,button,status,onText,setTimer=setTimeout,c
 if(typeof module!=='undefined'&&module.exports)module.exports=bindVoice;
 else{
  const voice=bindVoice({Recognition:root.SpeechRecognition||root.webkitSpeechRecognition,input:document.getElementById('tradeInput'),button:document.getElementById('voiceTrade'),status:document.getElementById('voiceStatus'),onText:()=>document.getElementById('tradeInput').dispatchEvent(new Event('input',{bubbles:true}))});
- if(voice){for(const id of ['tradeInput','tradeCategories','parseTrade','clearTrade','exampleBasic','exampleAmbiguous','exampleRange','savedTrades'])document.getElementById(id).addEventListener(id==='tradeInput'?'input':'click',voice.cancel);root.addEventListener('pagehide',voice.cancel);document.addEventListener('visibilitychange',()=>{if(document.hidden)voice.cancel();});}
+ if(voice){for(const id of ['tradeInput','tradeCategories','parseTrade','clearTrade','exampleBasic','showTextInput','toggleCatalog','exampleAmbiguous','exampleRange','savedTrades'])document.getElementById(id).addEventListener(id==='tradeInput'?'input':'click',voice.cancel);root.addEventListener('pagehide',voice.cancel);document.addEventListener('visibilitychange',()=>{if(document.hidden)voice.cancel();});}
 }
 })(typeof window!=='undefined'?window:globalThis);
