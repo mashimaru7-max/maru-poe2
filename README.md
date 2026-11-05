@@ -1,6 +1,30 @@
 # 유배자의 공방
 
-Buildless POE2 Korean stash/vendor search-expression workbench.
+POE2 browser tools with a shared UI shell and an optional Python desktop launcher.
+
+
+## Project structure and shared UI
+
+| Path | Owner / purpose |
+| --- | --- |
+| `ui/shell.html` | Single header, global navigation, page heading and footer for all four pages |
+| `ui/pages/*.html` | Page-specific markup; edit these instead of generated HTML |
+| `docs/site-shell.css` | Common width, spacing, typography, buttons, panels and responsive rules |
+| `docs/*.js`, other CSS, catalogs | Shared browser behavior and page-specific components |
+| `scripts/build_web.py` | Python standard-library build that generates all four `docs/*.html` pages |
+| `desktop/app.py` | Python/pywebview launcher that serves and displays the same `docs/` files |
+| `scripts/build_windows.py` | Windows-only PyInstaller EXE build |
+
+```sh
+python scripts/build_web.py
+python scripts/build_web.py --check
+python -m unittest discover -s tests -p 'test_*.py'
+node --test tests/*.test.cjs
+```
+
+Pages still publishes `main` / `docs`. Generated HTML remains tracked so the existing hosting configuration continues working. Web runtime is HTML/CSS/JavaScript; Python owns page composition and the optional desktop host, not a separate duplicate search engine. See `desktop/README.md` for Windows setup and packaging. An EXE has not been built or Windows-tested in the Linux environment.
+
+Browser QA compared all four desktop page widths/tab geometry/content starts and all four at a 390px iframe viewport. Common tabs and content starts match; mobile body horizontal overflow is zero. Existing card contents can have different heights according to each tool's task.
 
 ## Features
 - Vendor / waystone / equipment / tablet catalogs (41 equipment, 32 waystone, 85 tablet entries).
