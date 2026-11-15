@@ -1,5 +1,11 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#141517"><title>아이템 이름·약칭 사전 · 유배자의 공방</title><meta name="description" content="POE2 재화·장비·고유 아이템·젬을 한글명·영문명·약칭으로 찾아보세요."><link rel="stylesheet" href="style.css?v=20261104-filter1"><link rel="stylesheet" href="currency-aliases.css?v=20261105-items1">{{SHARED_STYLES}}</head><body>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#141517"><title>아이템 이름·약칭 사전 · 유배자의 공방</title><meta name="description" content="POE2 재화·장비·고유 아이템·젬을 한글명·영문명·약칭으로 찾아보세요."><link rel="stylesheet" href="style.css?v=20261104-filter1"><link rel="stylesheet" href="currency-aliases.css?v=20261105-items1">{{SHARED_STYLES}}
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/site-icons/icon-180-v1.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/site-icons/icon-192-v1.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/site-icons/icon-32-v1.png">
+    <link rel="shortcut icon" href="assets/site-icons/favicon-v1.ico">
+    <link rel="manifest" href="site.webmanifest">
+</head><body>
 <main class="shell dictionary"><div class="dictionary-stats" id="dictionaryStats"></div>
 <section class="panel"><label class="dictionary-search" for="dictionarySearch">어떤 아이템을 찾을까요?<input type="search" id="dictionarySearch" placeholder="마피, 헤헌, 메이지블러드, 미러, 완쥬, 화염구…" autocomplete="off" disabled></label><div class="dictionary-filters"><select id="dictionaryGroup" aria-label="아이템 분류"><option value="">전체 분류</option></select><select id="dictionaryType" aria-label="아이템 유형"><option value="">전체 유형</option></select><label><input type="checkbox" id="observedOnly">사용례가 확인된 약칭만</label><button id="downloadDictionary" class="quiet">전체 사전 JSON 받기</button></div><p id="dictionaryCount" role="status" aria-live="polite">아이템 DB를 불러오고 있어요…</p>
 <div class="dictionary-table-wrap" id="dictionaryTable"><table><thead><tr><th>한글명 · 영문명 · 유형</th><th>한국 글에서 확인한 표기</th><th>이름 표기 · 검색 보조</th><th>근거</th></tr></thead><tbody id="dictionaryRows"></tbody></table></div><div class="dictionary-pagination" aria-label="검색 결과 페이지"><button type="button" id="dictionaryPrevious" disabled>이전</button><span id="dictionaryPage" aria-live="polite"></span><button type="button" id="dictionaryNext" disabled>다음</button></div></section>
